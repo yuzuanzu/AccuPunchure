@@ -1,3 +1,4 @@
+@model AccuPunchure.Web.Models.LoginViewModel
 @{
     ViewData["Title"] = "Login";
 }
@@ -9,27 +10,34 @@
         <!-- Login Tab -->
         <input type="radio" name="auth_tabs" autocomplete="off" class="tab" aria-label="Login" checked="checked" />
         <div class="tab-content bg-base-100 border-base-300 p-4">
-            <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
-                <legend class="fieldset-legend">Login</legend>
-                <label class="label">Username or Email</label>
-                <input type="email" class="input w-full" placeholder="Username or email" />
-                <label class="label">Password</label>
-                <input type="password" class="input w-full" placeholder="Password" />
-                <label class="label mt-2">
-                    <input type="checkbox" class="checkbox" />
-                    Remember me
-                </label>
-                <button class="btn btn-neutral w-full mt-4">Login</button>
-            </fieldset>
+            <form asp-controller="Account" asp-action="Login" asp-route-slug="@Model.Slug" method="post">
+                <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
+                    <legend class="fieldset-legend">Login</legend>
+
+                    @if (Model.ErrorMessage is not null)
+                    {
+                        <div class="alert alert-error mb-2 text-sm">@Model.ErrorMessage</div>
+                    }
+
+                    <label class="label">Username</label>
+                    <input asp-for="Username" type="text" class="input w-full" placeholder="Username" />
+                    <span asp-validation-for="Username" class="text-error text-xs"></span>
+
+                    <label class="label mt-2">Password</label>
+                    <input asp-for="Password" type="password" class="input w-full" placeholder="Password" />
+                    <span asp-validation-for="Password" class="text-error text-xs"></span>
+
+                    <button type="submit" class="btn btn-neutral w-full mt-4">Login</button>
+                </fieldset>
+            </form>
         </div>
-        
 
         <!-- Admin Sign Up Tab -->
         <input type="radio" name="auth_tabs" autocomplete="off" class="tab" aria-label="Create Account" />
         <div class="tab-content bg-base-100 border-base-300 p-4">
             <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
                 <legend class="fieldset-legend">Create Account</legend>
-                <label class="label">Otganization Name</label>
+                <label class="label">Organization Name</label>
                 <input type="text" class="input w-full" placeholder="Organization Name" />
                 <label class="label">Username</label>
                 <input type="text" class="input w-full" placeholder="Username" />

@@ -1,6 +1,13 @@
+@model AccuPunchure.Web.Models.EmployeeDashboardViewModel
 @{
     ViewData["Title"] = "Home";
 }
+
+@* Hidden form — filled and submitted by punchOut() in JS *@
+<form id="punch-form" method="post" asp-controller="Employee" asp-action="Index" style="display:none">
+    <input type="hidden" id="input-start" name="StartTime" />
+    <input type="hidden" id="input-end"   name="EndTime" />
+</form>
 
 <div class="punch-container">
 

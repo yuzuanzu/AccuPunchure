@@ -1,0 +1,122 @@
+@model AccuPunchure.Web.Models.EmployeeHistoryViewModel
+@using AccuPunchure.Business.Enums
+@{
+    ViewData["Title"] = "History";
+
+    string TotalDisplay(TimeSpan t) =>
+        $"{(int)t.TotalHours}h {t.Minutes}m";
+
+    var sb = new System.Text.StringBuilder();
+    foreach (var f in Enum.GetValues<TimeSpanFilter>())
+    {
+        var selected = Model.SelectedTimeSpan == f ? " selected" : "";
+        sb.Append($"<option value=\"{f}\"{selected}>{f.Label()}</option>");
+    }
+    var timespanOptions = new Microsoft.AspNetCore.Html.HtmlString(sb.ToString());
+}
+
+@* Outer: full height, centered *@
+<div class="w-full flex justify-center px-4 py-6">
+
+    @* Inner container: max width, column layout, stretches full width up to cap *@
+    <div class="w-full max-w-4xl flex flex-col gap-6">
+
+        @* Stat + filter row — stat stretches left, join pins right *@
+        <div class="flex flex-row flex-wrap items-center justify-between gap-4">
+
+            <div class="stats stats-vertical lg:stats-horizontal shadow flex-1 min-w-64">
+
+                <div class="stat">
+                    <div class="stat-figure text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-8 w-8 stroke-current" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Total Hours Worked</div>
+                    <div class="stat-value">@TotalDisplay(Model.TotalHoursWorked)</div>
+                    <div class="stat-desc">@Model.SelectedTimeSpan.Label()</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-figure text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-8 w-8 stroke-current" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v7.5m-9-6h.008v.008H12V9Zm0 3.75h.008v.008H12v-.008Zm0 3.75h.008v.008H12v-.008Zm3.75-7.5h.008v.008H15.75V9Zm0 3.75h.008v.008H15.75v-.008Zm0 3.75h.008v.008H15.75v-.008ZM8.25 9h.008v.008H8.25V9Zm0 3.75h.008v.008H8.25v-.008Zm0 3.75h.008v.008H8.25v-.008Z" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Days Worked</div>
+                    <div class="stat-value">@Model.DaysWorked</div>
+                    <div class="stat-desc">@Model.SelectedTimeSpan.Label()</div>
+                </div>
+
+            </div>
+
+            @* Phone: select dropdown *@
+            <select class="select select-primary lg:hidden"
+                    onchange="window.location.href='@Url.Action("History")' + '?filter=' + this.value">
+                @timespanOptions
+            </select>
+
+            @* Desktop: join buttons *@
+            <div class="join hidden lg:flex">
+                @foreach (var f in Enum.GetValues<TimeSpanFilter>())
+                {
+                    <a asp-action="History" asp-route-filter="@f"
+                       class="btn join-item @(Model.SelectedTimeSpan == f ? "btn-neutral" : "")">
+                        @f.Label()
+                    </a>
+                }
+            </div>
+
+        </div>
+
+        @* Table — full width of container *@
+        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Hours Worked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Punches is null || !Model.Punches.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-base-content/50 py-8">
+                                No punches found for this period.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        var i = 1;
+                        foreach (var punch in Model.Punches)
+                        {
+                            <tr class="hover">
+                                <th>@i</th>
+                                <td>@punch.StartTime.ToString("MMM dd, yyyy")</td>
+                                <td>@punch.StartTime.ToString("h:mm tt")</td>
+                                <td>@(punch.EndTime?.ToString("h:mm tt") ?? "—")</td>
+                                <td>
+                                    @if (punch.TotalTime.HasValue)
+                                    {
+                                        @TotalDisplay(punch.TotalTime.Value)
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning badge-soft">In progress</span>
+                                    }
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

@@ -59,7 +59,7 @@ namespace AccuPunchure.Data.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Organization", b =>
@@ -83,7 +83,7 @@ namespace AccuPunchure.Data.Migrations
 
                     b.HasKey("OrganizationId");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("Organizations", (string)null);
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Punch", b =>
@@ -107,7 +107,7 @@ namespace AccuPunchure.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Punches");
+                    b.ToTable("Punches", (string)null);
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.User", b =>
@@ -140,7 +140,7 @@ namespace AccuPunchure.Data.Migrations
                     b.HasIndex("EmployeeId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Punch", b =>

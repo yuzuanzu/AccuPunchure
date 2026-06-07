@@ -3,6 +3,7 @@ using AccuPunchure.Data;
 using AccuPunchure.Data.Extensions;
 using AccuPunchure.Data.Seeders;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +32,22 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// ── Dev seeder ─────────────────────────────────────────────────────────────────
-if (app.Environment.IsDevelopment())
+// ── Migrate + seed ────────────────────────────────────────────────────────────
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    DevSeeder.Seed(db);
+    try
+    {
+        db.Database.Migrate();        // apply any pending migrations
+        DevSeeder.ClearPunches(db);   // wipe test punches on every restart
+        DevSeeder.Seed(db);           // no-op if already seeded
+        Console.WriteLine("[Startup] DB migrated and seeded.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Startup] Seeder failed: {ex.Message}");
+        throw;
+    }
 }
 
 // ── Middleware pipeline ────────────────────────────────────────────────────────
@@ -53,8 +64,14 @@ app.UseRouting();
 app.UseAuthentication();   // reads the cookie and populates HttpContext.User
 app.UseAuthorization();    // checks [Authorize] attributes
 
+// /{slug}/login  →  Account/Login
+app.MapControllerRoute(
+    name: "orgLogin",
+    pattern: "{slug}/login",
+    defaults: new { controller = "Account", action = "Login" });
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

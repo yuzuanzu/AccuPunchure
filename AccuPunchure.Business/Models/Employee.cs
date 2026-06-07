@@ -15,4 +15,9 @@ public class EmployeeModel
     public TimeSpan TotalHoursWorked => Punches
         .Where(p => p.TotalTime.HasValue)
         .Aggregate(TimeSpan.Zero, (sum, p) => sum + p.TotalTime!.Value);
+
+    public int DaysWorked => Punches
+        .Select(p => p.StartTime.Date)
+        .Distinct()
+        .Count();
 }
