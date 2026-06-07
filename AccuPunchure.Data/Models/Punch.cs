@@ -7,4 +7,6 @@ public class Punch
     public DateTime? EndTime { get; set; }
 
     public int EmployeeId { get; set; }
+    
+    public Employee Employee { get; set; } = null!;
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuPunchure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260606173641_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260607031521_OrganizationSlug")]
+    partial class OrganizationSlug
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,24 +47,46 @@ namespace AccuPunchure.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsManager")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("ManagerId")
+                    b.Property<int>("OrganizationId")
                         .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ProfilePicturePath")
+                        .HasColumnType("longtext");
+
                     b.HasKey("EmployeeId");
 
-                    b.HasIndex("ManagerId");
-
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("AccuPunchure.Data.Models.Organization", b =>
+                {
+                    b.Property<int>("OrganizationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OrganizationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("OrganizationId");
+
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Punch", b =>
@@ -99,12 +121,18 @@ namespace AccuPunchure.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganizationId")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -118,20 +146,10 @@ namespace AccuPunchure.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AccuPunchure.Data.Models.Employee", b =>
-                {
-                    b.HasOne("AccuPunchure.Data.Models.Employee", "Manager")
-                        .WithMany("Subordinates")
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Manager");
-                });
-
             modelBuilder.Entity("AccuPunchure.Data.Models.Punch", b =>
                 {
                     b.HasOne("AccuPunchure.Data.Models.Employee", "Employee")
-                        .WithMany("Punches")
+                        .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -141,21 +159,13 @@ namespace AccuPunchure.Data.Migrations
 
             modelBuilder.Entity("AccuPunchure.Data.Models.User", b =>
                 {
-                    b.HasOne("AccuPunchure.Data.Models.Employee", "Employee")
+                    b.HasOne("AccuPunchure.Data.Models.Employee", null)
                         .WithOne("User")
-                        .HasForeignKey("AccuPunchure.Data.Models.User", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
+                        .HasForeignKey("AccuPunchure.Data.Models.User", "EmployeeId");
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Employee", b =>
                 {
-                    b.Navigation("Punches");
-
-                    b.Navigation("Subordinates");
-
                     b.Navigation("User");
                 });
 #pragma warning restore 612, 618

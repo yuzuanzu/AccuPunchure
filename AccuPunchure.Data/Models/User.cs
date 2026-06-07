@@ -8,5 +8,6 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     public UserRole Role { get; set; } = UserRole.Employee;
 
-    public int EmployeeId { get; set; }
+    public int? EmployeeId { get; set; }
+    public int OrganizationId { get; set; }
 }

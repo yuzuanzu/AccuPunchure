@@ -7,6 +7,7 @@ public class Employee
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
+    public string? ProfilePicturePath { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
     

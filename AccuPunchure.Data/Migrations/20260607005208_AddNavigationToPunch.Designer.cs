@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuPunchure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260606221228_UpdateModels")]
-    partial class UpdateModels
+    [Migration("20260607005208_AddNavigationToPunch")]
+    partial class AddNavigationToPunch
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,12 +51,35 @@ namespace AccuPunchure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
                     b.HasKey("EmployeeId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("AccuPunchure.Data.Models.Organization", b =>
+                {
+                    b.Property<int>("OrganizationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OrganizationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("OrganizationId");
+
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Punch", b =>
@@ -78,6 +101,8 @@ namespace AccuPunchure.Data.Migrations
 
                     b.HasKey("PunchId");
 
+                    b.HasIndex("EmployeeId");
+
                     b.ToTable("Punches");
                 });
 
@@ -89,7 +114,10 @@ namespace AccuPunchure.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganizationId")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
@@ -111,13 +139,22 @@ namespace AccuPunchure.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("AccuPunchure.Data.Models.Punch", b =>
+                {
+                    b.HasOne("AccuPunchure.Data.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("AccuPunchure.Data.Models.User", b =>
                 {
                     b.HasOne("AccuPunchure.Data.Models.Employee", null)
                         .WithOne("User")
-                        .HasForeignKey("AccuPunchure.Data.Models.User", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccuPunchure.Data.Models.User", "EmployeeId");
                 });
 
             modelBuilder.Entity("AccuPunchure.Data.Models.Employee", b =>

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccuPunchure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddNavigationToPunch : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,18 +31,27 @@ namespace AccuPunchure.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IsManager = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ManagerId = table.Column<int>(type: "int", nullable: true)
+                    OrganizationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employees", x => x.EmployeeId);
-                    table.ForeignKey(
-                        name: "FK_Employees_Employees_ManagerId",
-                        column: x => x.ManagerId,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeId",
-                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Organizations",
+                columns: table => new
+                {
+                    OrganizationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Organizations", x => x.OrganizationId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -78,7 +87,9 @@ namespace AccuPunchure.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PasswordHash = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    EmployeeId = table.Column<int>(type: "int", nullable: true),
+                    OrganizationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,15 +98,9 @@ namespace AccuPunchure.Data.Migrations
                         name: "FK_Users_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "EmployeeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "EmployeeId");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_ManagerId",
-                table: "Employees",
-                column: "ManagerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Punches_EmployeeId",
@@ -112,6 +117,9 @@ namespace AccuPunchure.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Organizations");
+
             migrationBuilder.DropTable(
                 name: "Punches");
 
