@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="punch-container">
+
+    <div class="countdown-grid">
+        <div class="countdown-box bg-neutral rounded-box text-neutral-content">
+            <span class="countdown countdown-number">
+                <span id="cd-hours-t" style="--value:0;"></span><span id="cd-hours-u" style="--value:0;"></span>
+            </span>
+            hours
+        </div>
+        <div class="countdown-box bg-neutral rounded-box text-neutral-content">
+            <span class="countdown countdown-number">
+                <span id="cd-minutes-t" style="--value:0;"></span><span id="cd-minutes-u" style="--value:0;"></span>
+            </span>
+            min
+        </div>
+        <div class="countdown-box bg-neutral rounded-box text-neutral-content">
+            <span class="countdown countdown-number">
+                <span id="cd-seconds-t" style="--value:0;"></span><span id="cd-seconds-u" style="--value:0;"></span>
+            </span>
+            sec
+        </div>
+    </div>
+
+    <button id="btn-punch-in" class="btn btn-success btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl" onclick="punchIn()">Punch In</button>
+    <button id="btn-punch-out" class="btn btn-soft btn-error btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl hidden" onclick="punchOut()">Punch Out</button>
+
+</div>

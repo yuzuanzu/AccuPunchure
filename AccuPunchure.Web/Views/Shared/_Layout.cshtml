@@ -6,10 +6,14 @@
     <title>@ViewData["Title"] - AccuPunchure</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="~/css/navbar.css" rel="stylesheet" />
+    <link href="~/css/index.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
+    <script src="~/js/accupunchure.js" defer></script>
 </head>
-<body>
-    <main>
+<body class="flex flex-col h-screen">
+    @await Html.PartialAsync("_Navbar")
+    <main class="flex-1 flex">
         @RenderBody()
     </main>
 </body>

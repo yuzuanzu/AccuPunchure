@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="flex items-center justify-center w-full">
+
+    <div class="tabs tabs-lift" style="width: 360px;">
+
+        <!-- Login Tab -->
+        <input type="radio" name="auth_tabs" autocomplete="off" class="tab" aria-label="Login" checked="checked" />
+        <div class="tab-content bg-base-100 border-base-300 p-4">
+            <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
+                <legend class="fieldset-legend">Login</legend>
+                <label class="label">Username or Email</label>
+                <input type="email" class="input w-full" placeholder="Username or email" />
+                <label class="label">Password</label>
+                <input type="password" class="input w-full" placeholder="Password" />
+                <label class="label mt-2">
+                    <input type="checkbox" class="checkbox" />
+                    Remember me
+                </label>
+                <button class="btn btn-neutral w-full mt-4">Login</button>
+            </fieldset>
+        </div>
+        
+
+        <!-- Admin Sign Up Tab -->
+        <input type="radio" name="auth_tabs" autocomplete="off" class="tab" aria-label="Create Account" />
+        <div class="tab-content bg-base-100 border-base-300 p-4">
+            <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
+                <legend class="fieldset-legend">Create Account</legend>
+                <label class="label">Otganization Name</label>
+                <input type="text" class="input w-full" placeholder="Organization Name" />
+                <label class="label">Username</label>
+                <input type="text" class="input w-full" placeholder="Username" />
+                <label class="label">Email</label>
+                <input type="email" class="input w-full" placeholder="Email" />
+                <label class="label">Password</label>
+                <input type="password" class="input w-full" placeholder="Password" />
+                <label class="label">Verify Password</label>
+                <input type="password" class="input w-full" placeholder="Verify Password" />
+                <button class="btn btn-neutral w-full mt-4">Sign Up</button>
+            </fieldset>
+        </div>
+
+    </div>
+
+</div>

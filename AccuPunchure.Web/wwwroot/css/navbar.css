@@ -1,0 +1,32 @@
+/* Navbar */
+.navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.navbar-brand:hover {
+    background-color: oklch(var(--b2) / 0.5);
+}
+
+@media (min-width: 640px) {
+    .navbar-brand {
+        font-size: 1.75rem;
+    }
+}
+
+.nav-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+@media (min-width: 640px) {
+    .nav-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
